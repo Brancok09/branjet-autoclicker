@@ -1,18 +1,16 @@
 -- ⚡ Branjet AutoClicker - Final Turbo Edition with Speed Slider (LocalScript)
 
--- SERVICES
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local player = Players.LocalPlayer
 local mouse = player:GetMouse()
 
--- GUI INIT
 local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 gui.Name = "BranjetAutoClick"
 gui.ResetOnSpawn = false
 
--- 🌟 INTRO TEXT
+-- 🌟 Intro
 local intro = Instance.new("TextLabel", gui)
 intro.Text = "BRANJET SCRIPTS"
 intro.Size = UDim2.new(0, 300, 0, 60)
@@ -24,7 +22,6 @@ intro.TextColor3 = Color3.fromRGB(0,255,255)
 intro.TextStrokeTransparency = 0.4
 intro.TextStrokeColor3 = Color3.fromRGB(255,255,255)
 
--- INTRO COLOR PULSE
 task.spawn(function()
 	while intro and intro.Parent do
 		intro.TextColor3 = Color3.fromRGB(255,0,255)
@@ -34,14 +31,13 @@ task.spawn(function()
 	end
 end)
 
--- FADE EFFECT
 TweenService:Create(intro, TweenInfo.new(2), {TextTransparency = 0}):Play()
 task.wait(3)
 TweenService:Create(intro, TweenInfo.new(2), {TextTransparency = 1}):Play()
 task.wait(2)
 intro:Destroy()
 
--- ⚪ TAP TARGET
+-- 🎯 Tap Target
 local tapCircle = Instance.new("Frame", gui)
 tapCircle.Size = UDim2.new(0, 40, 0, 40)
 tapCircle.Position = UDim2.new(0.5, -20, 0.7, 0)
@@ -53,7 +49,6 @@ tapCircle.Active = true
 tapCircle.Draggable = true
 tapCircle.ZIndex = 3
 
--- 🔴 RED "O" INSIDE
 local circleText = Instance.new("TextLabel", tapCircle)
 circleText.Size = UDim2.new(1, 0, 1, 0)
 circleText.Position = UDim2.new(0, 0, 0, 0)
@@ -64,7 +59,7 @@ circleText.Font = Enum.Font.GothamBold
 circleText.TextScaled = true
 circleText.ZIndex = 4
 
--- 🎛️ TOGGLE BUTTON
+-- 🎛️ Toggle Button
 local button = Instance.new("TextButton", gui)
 button.Text = "AutoClick OFF"
 button.Size = UDim2.new(0, 120, 0, 50)
@@ -77,7 +72,7 @@ button.Active = true
 button.Draggable = true
 button.ZIndex = 2
 
--- 🎚️ SPEED SLIDER
+-- 🎚️ Speed Slider
 local speedLabel = Instance.new("TextLabel", gui)
 speedLabel.Text = "Speed:"
 speedLabel.Size = UDim2.new(0, 60, 0, 30)
@@ -92,15 +87,15 @@ local slider = Instance.new("TextButton", gui)
 slider.Size = UDim2.new(0, 120, 0, 30)
 slider.Position = speedLabel.Position + UDim2.new(0, 65, 0, 0)
 slider.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-slider.Text = "Speed: 1000"
+slider.Text = "Speed: 500"
 slider.TextColor3 = Color3.fromRGB(255,255,255)
 slider.Font = Enum.Font.GothamBold
 slider.TextScaled = true
 slider.ZIndex = 2
 
-local speed = 1000
+local speed = 500
 local speedOptions = {250, 500, 750, 1000, 1500}
-local currentIndex = 4
+local currentIndex = 2
 
 slider.MouseButton1Click:Connect(function()
 	currentIndex += 1
@@ -109,7 +104,7 @@ slider.MouseButton1Click:Connect(function()
 	slider.Text = "Speed: " .. speed
 end)
 
--- 🧠 AUTOCLICK ENGINE
+-- 🔁 AutoClick Engine
 local autoClicking = false
 local clickLoop
 
