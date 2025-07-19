@@ -1,0 +1,138 @@
+-- ⚡ Branjet AutoClicker - Final Turbo Edition with Speed Slider (LocalScript)
+
+-- SERVICES
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local player = Players.LocalPlayer
+local mouse = player:GetMouse()
+
+-- GUI INIT
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "BranjetAutoClick"
+gui.ResetOnSpawn = false
+
+-- 🌟 INTRO TEXT
+local intro = Instance.new("TextLabel", gui)
+intro.Text = "BRANJET SCRIPTS"
+intro.Size = UDim2.new(0, 300, 0, 60)
+intro.Position = UDim2.new(0.5, -150, 0.3, 0)
+intro.BackgroundTransparency = 1
+intro.TextScaled = true
+intro.Font = Enum.Font.GothamBold
+intro.TextColor3 = Color3.fromRGB(0,255,255)
+intro.TextStrokeTransparency = 0.4
+intro.TextStrokeColor3 = Color3.fromRGB(255,255,255)
+
+-- INTRO COLOR PULSE
+task.spawn(function()
+	while intro and intro.Parent do
+		intro.TextColor3 = Color3.fromRGB(255,0,255)
+		task.wait(0.3)
+		intro.TextColor3 = Color3.fromRGB(0,255,255)
+		task.wait(0.3)
+	end
+end)
+
+-- FADE EFFECT
+TweenService:Create(intro, TweenInfo.new(2), {TextTransparency = 0}):Play()
+task.wait(3)
+TweenService:Create(intro, TweenInfo.new(2), {TextTransparency = 1}):Play()
+task.wait(2)
+intro:Destroy()
+
+-- ⚪ TAP TARGET
+local tapCircle = Instance.new("Frame", gui)
+tapCircle.Size = UDim2.new(0, 40, 0, 40)
+tapCircle.Position = UDim2.new(0.5, -20, 0.7, 0)
+tapCircle.BackgroundColor3 = Color3.fromRGB(255,255,255)
+tapCircle.BackgroundTransparency = 0.6
+tapCircle.BorderSizePixel = 0
+tapCircle.AnchorPoint = Vector2.new(0.5,0.5)
+tapCircle.Active = true
+tapCircle.Draggable = true
+tapCircle.ZIndex = 3
+
+-- 🔴 RED "O" INSIDE
+local circleText = Instance.new("TextLabel", tapCircle)
+circleText.Size = UDim2.new(1, 0, 1, 0)
+circleText.Position = UDim2.new(0, 0, 0, 0)
+circleText.BackgroundTransparency = 1
+circleText.Text = "O"
+circleText.TextColor3 = Color3.fromRGB(255, 0, 0)
+circleText.Font = Enum.Font.GothamBold
+circleText.TextScaled = true
+circleText.ZIndex = 4
+
+-- 🎛️ TOGGLE BUTTON
+local button = Instance.new("TextButton", gui)
+button.Text = "AutoClick OFF"
+button.Size = UDim2.new(0, 120, 0, 50)
+button.Position = UDim2.new(1, -130, 1, -100)
+button.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+button.TextColor3 = Color3.fromRGB(255,255,255)
+button.Font = Enum.Font.GothamBold
+button.TextScaled = true
+button.Active = true
+button.Draggable = true
+button.ZIndex = 2
+
+-- 🎚️ SPEED SLIDER
+local speedLabel = Instance.new("TextLabel", gui)
+speedLabel.Text = "Speed:"
+speedLabel.Size = UDim2.new(0, 60, 0, 30)
+speedLabel.Position = button.Position - UDim2.new(0, 130, 0, 0)
+speedLabel.BackgroundTransparency = 1
+speedLabel.TextColor3 = Color3.fromRGB(255,255,255)
+speedLabel.Font = Enum.Font.Gotham
+speedLabel.TextScaled = true
+speedLabel.ZIndex = 2
+
+local slider = Instance.new("TextButton", gui)
+slider.Size = UDim2.new(0, 120, 0, 30)
+slider.Position = speedLabel.Position + UDim2.new(0, 65, 0, 0)
+slider.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+slider.Text = "Speed: 1000"
+slider.TextColor3 = Color3.fromRGB(255,255,255)
+slider.Font = Enum.Font.GothamBold
+slider.TextScaled = true
+slider.ZIndex = 2
+
+local speed = 1000
+local speedOptions = {250, 500, 750, 1000, 1500}
+local currentIndex = 4
+
+slider.MouseButton1Click:Connect(function()
+	currentIndex += 1
+	if currentIndex > #speedOptions then currentIndex = 1 end
+	speed = speedOptions[currentIndex]
+	slider.Text = "Speed: " .. speed
+end)
+
+-- 🧠 AUTOCLICK ENGINE
+local autoClicking = false
+local clickLoop
+
+button.MouseButton1Click:Connect(function()
+	autoClicking = not autoClicking
+
+	if autoClicking then
+		button.Text = "AutoClick ON"
+		button.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+
+		clickLoop = task.spawn(function()
+			while autoClicking do
+				local pos = tapCircle.AbsolutePosition + (tapCircle.AbsoluteSize / 2)
+				for i = 1, speed / 50 do
+					VirtualInputManager:SendMouseButtonEvent(pos.X, pos.Y, 0, true, game, 0)
+					VirtualInputManager:SendMouseButtonEvent(pos.X, pos.Y, 0, false, game, 0)
+				end
+				task.wait(0.02)
+			end
+		end)
+	else
+		button.Text = "AutoClick OFF"
+		button.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+		autoClicking = false
+	end
+end)
